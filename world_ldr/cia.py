@@ -16,7 +16,7 @@ def get_all_country_links():
 
 
 def get_chiefs(country_code):
-    roles = []
+    roles = {}
     url = 'https://www.cia.gov/library/publications/world-leaders-1/'+ country_code
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -25,8 +25,7 @@ def get_chiefs(country_code):
     for p in country.find_all('div', id ='chiefsOutput'):
         name = p.find('span', class_='cos_name')
         title = p.find('span', class_='title')
-        role = { title.text.strip() : name.text.strip() }
-        roles.append(role)
+        roles[title.text.strip()] = name.text.strip()
     return roles
 
 
@@ -37,11 +36,10 @@ def get_all_country_leaders(country_name_list):
         country_code = country[key]
         output = get_chiefs(country_code)
         country_output_dict[key] = output
-        print(output)
         time.sleep(1)
     return country_output_dict
 
 
 country_name_list = get_all_country_links()
 output = get_all_country_leaders(country_name_list)
-print(output)
+
